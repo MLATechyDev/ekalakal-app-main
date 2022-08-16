@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "959919906610",
+    "project_id": "cap102-ekalakal-app",
+    "storage_bucket": "cap102-ekalakal-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:959919906610:android:26bd6b41b84c06a3b4012b",
+        "android_client_info": {
+          "package_name": "com.example.ekalakal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "959919906610-jnk0kndphkml1hbifparto4c3bjuluvi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1iDVomkAyLfnuifzCdvURMTAH0ZWx1WE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "959919906610-jnk0kndphkml1hbifparto4c3bjuluvi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
