@@ -24,15 +24,15 @@ class _ResidentMainAppState extends State<ResidentMainApp> {
   int index = 0;
 
   final items = <Widget>[
-    Icon(
+    const Icon(
       Icons.home,
       size: 30,
     ),
-    Icon(
+    const Icon(
       Icons.add,
       size: 30,
     ),
-    Icon(
+    const Icon(
       Icons.person,
       size: 30,
     ),
@@ -54,13 +54,13 @@ class _ResidentMainAppState extends State<ResidentMainApp> {
       body: screen[index],
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
-          iconTheme: IconThemeData(color: Colors.white),
+          iconTheme: const IconThemeData(color: Colors.white),
         ),
         child: CurvedNavigationBar(
           //key: navigationKey,
           height: 60,
           backgroundColor: Colors.transparent,
-          animationDuration: Duration(milliseconds: 300),
+          animationDuration: const Duration(milliseconds: 300),
           color: Colors.blue,
           items: items,
           onTap: (index) => setState(() => this.index = index),

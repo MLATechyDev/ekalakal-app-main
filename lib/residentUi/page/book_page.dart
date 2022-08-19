@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../databaseUser/users.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class BookPage extends StatefulWidget {
   BookPage({Key? key}) : super(key: key);
@@ -21,7 +24,7 @@ class _BookPageState extends State<BookPage> {
         margin: EdgeInsets.fromLTRB(30, 30, 30, 0),
         child: ListView(
           children: [
-            Text(
+            const Text(
               'Book your Kalakal',
               style: TextStyle(
                 fontSize: 20,
@@ -29,7 +32,7 @@ class _BookPageState extends State<BookPage> {
                 letterSpacing: 1,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 5,
             ),
             // Text(
@@ -40,28 +43,38 @@ class _BookPageState extends State<BookPage> {
             //     letterSpacing: 1,
             //   ),
             // ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             KeyboardDismisser(
-              gestures: [GestureType.onTap],
+              gestures: const [GestureType.onTap],
               child: Center(
                 child: Column(
                   children: [
                     buildTextName(),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     buildTextAddress(),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     buildTextContact(),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     buildDescription(),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        btnBook(),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        btnUploadPhoto()
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -76,9 +89,9 @@ class _BookPageState extends State<BookPage> {
         controller: nameTextController,
         decoration: InputDecoration(
           labelText: 'Name',
-          prefixIcon: Icon(Icons.person),
+          prefixIcon: const Icon(Icons.person),
           suffixIcon: IconButton(
-            icon: Icon(Icons.close),
+            icon: const Icon(Icons.close),
             onPressed: () => nameTextController.clear(),
           ),
           border: OutlineInputBorder(
@@ -92,9 +105,9 @@ class _BookPageState extends State<BookPage> {
         controller: addressController,
         decoration: InputDecoration(
           labelText: 'Address',
-          prefixIcon: Icon(Icons.house),
+          prefixIcon: const Icon(Icons.house),
           suffixIcon: IconButton(
-            icon: Icon(Icons.close),
+            icon: const Icon(Icons.close),
             onPressed: () => addressController.clear(),
           ),
           border: OutlineInputBorder(
@@ -107,9 +120,9 @@ class _BookPageState extends State<BookPage> {
         controller: contactController,
         decoration: InputDecoration(
           labelText: 'Contact Number',
-          prefixIcon: Icon(Icons.contact_phone),
+          prefixIcon: const Icon(Icons.contact_phone),
           suffixIcon: IconButton(
-            icon: Icon(Icons.close),
+            icon: const Icon(Icons.close),
             onPressed: () => contactController.clear(),
           ),
           border: OutlineInputBorder(
@@ -118,13 +131,14 @@ class _BookPageState extends State<BookPage> {
         ),
         keyboardType: TextInputType.phone,
       );
-  Widget buildDescription() => TextField(
+  Widget buildDescription() => TextFormField(
+        maxLength: 200,
         controller: descriptionController,
         decoration: InputDecoration(
           labelText: 'Description',
-          prefixIcon: Icon(Icons.description),
+          prefixIcon: const Icon(Icons.description),
           suffixIcon: IconButton(
-            icon: Icon(Icons.close),
+            icon: const Icon(Icons.close),
             onPressed: () => descriptionController.clear(),
           ),
           border: OutlineInputBorder(
@@ -133,4 +147,42 @@ class _BookPageState extends State<BookPage> {
         ),
         keyboardType: TextInputType.text,
       );
+
+  Widget btnBook() => ElevatedButton(
+        style: ElevatedButton.styleFrom(minimumSize: Size(100, 50)),
+        onPressed: () {
+          final user = UserInfo(
+              name: nameTextController.text,
+              address: addressController.text,
+              contactnumber: contactController.text,
+              description: descriptionController.text);
+
+          createuser(user);
+          nameTextController.clear();
+          addressController.clear();
+          contactController.clear();
+          descriptionController.clear();
+          Fluttertoast.showToast(
+            msg: 'Book Successfully!',
+            fontSize: 18,
+          );
+        },
+        child: const Text("Book"),
+      );
+
+  Widget btnUploadPhoto() => ElevatedButton(
+        onPressed: () {},
+        style: ElevatedButton.styleFrom(minimumSize: Size(100, 50)),
+        child: const Text(
+          "Upload Photo",
+        ),
+      );
+
+  Future createuser(UserInfo user) async {
+    final docUser = FirebaseFirestore.instance.collection('appointments').doc();
+
+    user.id = docUser.id;
+    final json = user.toJson();
+    await docUser.set(json);
+  }
 }

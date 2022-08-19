@@ -21,6 +21,7 @@ class EkalakalApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        title: "E KALAKAL APP",
         navigatorKey: navigatorKey,
         theme: ThemeData(primarySwatch: Colors.blue),
         debugShowCheckedModeBanner: false,
