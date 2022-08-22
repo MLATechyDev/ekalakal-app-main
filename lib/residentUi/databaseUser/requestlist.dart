@@ -1,5 +1,9 @@
+import 'package:ekalakal/residentUi/databaseUser/users.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../databaseUser/res_app_info.dart';
+
+var counterKey;
 
 class RequestList extends StatefulWidget {
   const RequestList({super.key});
@@ -11,6 +15,7 @@ class RequestList extends StatefulWidget {
 class _RequestListState extends State<RequestList> {
   final Stream<QuerySnapshot> appointments =
       FirebaseFirestore.instance.collection('appointments').snapshots();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -30,6 +35,13 @@ class _RequestListState extends State<RequestList> {
               );
             }
             final data = snapshot.requireData;
+            // final List<UserInfo> resList = List.generate(
+            //     data.size,
+            //     (index) => UserInfo(
+            //         name: data.docs[index]['name'].toString(),
+            //         address: data.docs[index]['address'].toString(),
+            //         contactnumber: data.docs[index]['contactnumber'],
+            //         description: data.docs[index]['description']));
             return ListView.builder(
                 shrinkWrap: true,
                 itemCount: data.size,
@@ -37,12 +49,25 @@ class _RequestListState extends State<RequestList> {
                   return Column(
                     children: [
                       Container(
-                        color: Colors.amberAccent,
+                        decoration: const BoxDecoration(
+                            color: Colors.amberAccent,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
                         child: ListTile(
-                          leading: Icon(Icons.heart_broken),
+                          leading: Icon(Icons.star),
                           title: Text('Name: ${data.docs[index]['name']}'),
                           subtitle:
                               Text('Address: ${data.docs[index]['address']}'),
+                          onTap: () {
+                            counterKey = index;
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return ResListinfo();
+                                },
+                              ),
+                            );
+                          },
                         ),
                       ),
                       const Padding(padding: EdgeInsets.only(top: 8.0))
@@ -71,7 +96,9 @@ class _OnGoingListState extends State<OnGoingList> {
           itemCount: 1,
           itemBuilder: (context, index) {
             return Container(
-              color: Colors.lightBlue,
+              decoration: const BoxDecoration(
+                  color: Colors.lightBlue,
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
               child: const ListTile(
                 leading: Icon(Icons.star),
                 title: Text('Name: Sample stactic'),

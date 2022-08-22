@@ -84,47 +84,6 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-
-            // Container(
-            //   margin: EdgeInsets.all(8.0),
-            //   child: StreamBuilder<QuerySnapshot>(
-            //       stream: appointments,
-            //       builder: (BuildContext context,
-            //           AsyncSnapshot<QuerySnapshot> snapshot) {
-            //         if (snapshot.hasError) {
-            //           return Center(
-            //             child: Text('Something went wrong!'),
-            //           );
-            //         }
-            //         if (snapshot.connectionState == ConnectionState.waiting) {
-            //           return Center(
-            //             child: Text('Loading'),
-            //           );
-            //         }
-            //         final data = snapshot.requireData;
-            //         return ListView.builder(
-            //             shrinkWrap: true,
-            //             itemCount: data.size,
-            //             itemBuilder: (context, index) {
-            //               return Column(
-            //                 children: [
-            //                   Container(
-            //                     color: Colors.amberAccent,
-            //                     child: ListTile(
-            //                       leading: Icon(Icons.heart_broken),
-            //                       title:
-            //                           Text('Name: ${data.docs[index]['name']}'),
-            //                       subtitle: Text(
-            //                           'Address: ${data.docs[index]['address']}'),
-            //                     ),
-            //                   ),
-            //                   const Padding(padding: EdgeInsets.only(top: 8.0))
-            //                 ],
-            //               );
-            //             });
-            //       }),
-            // ),
-
             _requestList ? const RequestList() : const OnGoingList(),
           ],
         ),

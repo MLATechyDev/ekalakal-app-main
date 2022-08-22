@@ -25,15 +25,21 @@ class UserInfo {
         'description': description,
       };
 
-  // static UserInfo fromJson(Map<String, dynamic> json) => UserInfo(
-  //     name: json['name'],
-  //     address: json['address'],
-  //     contactnumber: json['contactnumber'],
-  //     description: json['description']);
+  static UserInfo fromJson(Map<String, dynamic> json) => UserInfo(
+      name: json['name'],
+      address: json['address'],
+      contactnumber: json['contactnumber'],
+      description: json['description']);
 }
 
-// Stream<List<UserInfo>> readUser() => FirebaseFirestore.instance
-//     .collection('appointments')
-//     .snapshots()
-//     .map((snapshot) =>
-//         snapshot.docs.map((doc) => UserInfo.fromJson(doc.data())).toList());
+Stream<List<UserInfo>> readUser() => FirebaseFirestore.instance
+    .collection('appointments')
+    .snapshots()
+    .map((snapshot) =>
+        snapshot.docs.map((doc) => UserInfo.fromJson(doc.data())).toList());
+
+class CounterNum {
+  int counter;
+
+  CounterNum(this.counter);
+}
