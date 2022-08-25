@@ -12,6 +12,8 @@ class BookPage extends StatefulWidget {
 }
 
 class _BookPageState extends State<BookPage> {
+  final _formkey = GlobalKey<FormState>();
+
   final nameTextController = TextEditingController();
   final addressController = TextEditingController();
   final contactController = TextEditingController();
@@ -47,35 +49,38 @@ class _BookPageState extends State<BookPage> {
             KeyboardDismisser(
               gestures: const [GestureType.onTap],
               child: Center(
-                child: Column(
-                  children: [
-                    buildTextName(),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    buildTextAddress(),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    buildTextContact(),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    buildDescription(),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        btnBook(),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        btnUploadPhoto()
-                      ],
-                    )
-                  ],
+                child: Form(
+                  key: _formkey,
+                  child: Column(
+                    children: [
+                      buildTextName(),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      buildTextAddress(),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      buildTextContact(),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      buildDescription(),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          btnBook(),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          btnUploadPhoto()
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -85,7 +90,16 @@ class _BookPageState extends State<BookPage> {
     );
   }
 
-  Widget buildTextName() => TextField(
+  Widget buildTextName() => TextFormField(
+        validator: (value) {
+          if (nameTextController.text.isEmpty || value == null) {
+            return " Please fill this field!";
+          } else if (value.length < 3) {
+            return "Please enter a valid Name";
+          } else {
+            return null;
+          }
+        },
         controller: nameTextController,
         decoration: InputDecoration(
           labelText: 'Name',
@@ -101,7 +115,16 @@ class _BookPageState extends State<BookPage> {
         keyboardType: TextInputType.name,
       );
 
-  Widget buildTextAddress() => TextField(
+  Widget buildTextAddress() => TextFormField(
+        validator: (value) {
+          if (addressController.text.isEmpty || value == null) {
+            return " Please fill this field!";
+          } else if (value.length < 10) {
+            return "Please enter a valid Address";
+          } else {
+            return null;
+          }
+        },
         controller: addressController,
         decoration: InputDecoration(
           labelText: 'Address',
@@ -116,7 +139,16 @@ class _BookPageState extends State<BookPage> {
         ),
         keyboardType: TextInputType.streetAddress,
       );
-  Widget buildTextContact() => TextField(
+  Widget buildTextContact() => TextFormField(
+        validator: (value) {
+          if (contactController.text.isEmpty || value == null) {
+            return " Please fill this field!";
+          } else if (value.length < 11 || value.length > 11) {
+            return "Invalid Contact Number";
+          } else {
+            return null;
+          }
+        },
         controller: contactController,
         decoration: InputDecoration(
           labelText: 'Contact Number',
@@ -149,15 +181,20 @@ class _BookPageState extends State<BookPage> {
       );
 
   Widget btnBook() => ElevatedButton(
-        style: ElevatedButton.styleFrom(minimumSize: Size(100, 50)),
+        style: ElevatedButton.styleFrom(
+            minimumSize: const Size(100, 50),
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30)))),
         onPressed: () {
+          final isValid = _formkey.currentState!.validate();
+          if (!isValid) return;
           final user = UserInfo(
               name: nameTextController.text,
               address: addressController.text,
               contactnumber: contactController.text,
               description: descriptionController.text);
 
-          createuser(user);
+          createBook(user);
           nameTextController.clear();
           addressController.clear();
           contactController.clear();
@@ -167,21 +204,30 @@ class _BookPageState extends State<BookPage> {
             fontSize: 18,
           );
         },
-        child: const Text("Book"),
+        child: const Text(
+          "Book",
+          style: TextStyle(fontSize: 18),
+        ),
       );
 
   Widget btnUploadPhoto() => ElevatedButton(
         onPressed: () {},
-        style: ElevatedButton.styleFrom(minimumSize: Size(100, 50)),
+        style: ElevatedButton.styleFrom(
+          minimumSize: const Size(100, 50),
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(30))),
+        ),
         child: const Text(
           "Upload Photo",
+          style: TextStyle(fontSize: 18),
         ),
       );
 
-  Future createuser(UserInfo user) async {
+  Future createBook(UserInfo user) async {
     final docUser = FirebaseFirestore.instance.collection('appointments').doc();
 
     user.id = docUser.id;
+    user.status = 'pending';
     final json = user.toJson();
     await docUser.set(json);
   }

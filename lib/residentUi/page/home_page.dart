@@ -48,7 +48,15 @@ class _HomePageState extends State<HomePage> {
                             minimumSize: Size(150, 50),
                             shape: StadiumBorder(),
                           ),
-                          child: Text('Request'),
+                          child: Column(
+                            children: const [
+                              Text(
+                                'Pending',
+                                style: TextStyle(fontSize: 15),
+                              ),
+                              Text('Request', style: TextStyle(fontSize: 15)),
+                            ],
+                          ),
                           onPressed: () {
                             Fluttertoast.showToast(
                               msg: 'Pending Request',
@@ -66,7 +74,15 @@ class _HomePageState extends State<HomePage> {
                             side:
                                 const BorderSide(width: 3, color: Colors.blue),
                           ),
-                          child: const Text('On Going'),
+                          child: Column(
+                            children: const [
+                              Text(
+                                'On Going',
+                                style: TextStyle(fontSize: 15),
+                              ),
+                              Text('Request', style: TextStyle(fontSize: 15)),
+                            ],
+                          ),
                           onPressed: () {
                             Fluttertoast.showToast(
                               msg: 'On Going Transaction',

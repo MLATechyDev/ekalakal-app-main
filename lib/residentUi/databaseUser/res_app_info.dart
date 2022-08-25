@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../databaseUser/users.dart';
+
 import '../databaseUser/requestlist.dart';
 
 class ResListinfo extends StatefulWidget {
@@ -52,6 +52,13 @@ class _ResListinfoState extends State<ResListinfo> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Text(
+                                'Appointment status: ${data.docs[index = counterKey]['status']}',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
                               Text(
                                 'Name: ${data.docs[index = counterKey]['name']}',
                                 style: TextStyle(fontSize: 20),

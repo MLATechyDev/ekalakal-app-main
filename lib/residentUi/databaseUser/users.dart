@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class UserInfo {
   String id;
+  String status;
   final String name;
   final String address;
   final String contactnumber;
@@ -11,6 +12,7 @@ class UserInfo {
 
   UserInfo({
     this.id = '',
+    this.status = '',
     required this.name,
     required this.address,
     required this.contactnumber,
@@ -19,6 +21,7 @@ class UserInfo {
 
   Map<String, dynamic> toJson() => {
         'id': id,
+        'status': status,
         'name': name,
         'address': address,
         'contact number': contactnumber,

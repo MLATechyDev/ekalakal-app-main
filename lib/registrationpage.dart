@@ -1,16 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ekalakal/loginpage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:ekalakal/utils.dart';
+import 'authentication/usersAuth.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 var _errorMsg;
 
 class RegistrationPageUI extends StatefulWidget {
-  const RegistrationPageUI({Key? key}) : super(key: key);
+  final String loginAs;
+  RegistrationPageUI({Key? key, required this.loginAs}) : super(key: key);
 
   @override
   State<RegistrationPageUI> createState() => _RegistrationPageUIState();
@@ -126,7 +128,14 @@ class _RegistrationPageUIState extends State<RegistrationPageUI> {
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0),
                         child: ElevatedButton(
-                          onPressed: signUp,
+                          onPressed: () {
+                            final user = UserLoginPosition(
+                                email: emailController.text,
+                                position: widget.loginAs);
+
+                            signUp();
+                            createUserPosition(user);
+                          },
                           style: ElevatedButton.styleFrom(
                               shape: const RoundedRectangleBorder(
                                   borderRadius:
@@ -147,7 +156,7 @@ class _RegistrationPageUIState extends State<RegistrationPageUI> {
                               onPressed: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (BuildContext context) {
-                                  return LoginPage();
+                                  return const LoginPage();
                                 }));
                               },
                               child: const Text("Sign In"))
@@ -225,5 +234,13 @@ class _RegistrationPageUIState extends State<RegistrationPageUI> {
 
     //Navigator.of(context) not working!!
     navigatorKey.currentState!.popUntil((route) => route.isFirst);
+  }
+
+  Future createUserPosition(UserLoginPosition user) async {
+    final docUser = FirebaseFirestore.instance.collection('userpos').doc();
+
+    user.id = docUser.id;
+    final json = user.toJson();
+    await docUser.set(json);
   }
 }

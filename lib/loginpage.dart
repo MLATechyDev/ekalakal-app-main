@@ -1,25 +1,31 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ekalakal/wrapper.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'registrationpage.dart';
-import 'res_dashboard.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:ekalakal/main.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:email_validator/email_validator.dart';
 import 'residentUi/resident_main.dart';
+import 'collectorUi/collector_main.dart';
+import 'authentication/usersAuth.dart';
+import 'authentication/userPosition.dart';
 
 var _errorMsg;
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key? key}) : super(key: key);
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final Stream<QuerySnapshot> userPos =
+      FirebaseFirestore.instance.collection('userpos').snapshots();
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
@@ -32,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Text("Something went wrong!"),
           );
         } else if (snapshot.hasData) {
-          return ResidentMainApp();
+          return UserWrap();
         } else {
           return LoginPageUI();
         }
@@ -182,7 +188,7 @@ class _LoginPageUIState extends State<LoginPageUI> {
                             onPressed: () {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (BuildContext context) {
-                                return const RegistrationPageUI();
+                                return WrapperPage();
                               }));
                             },
                             child: const Text("Sign Up"))
