@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../databaseUser/res_app_info.dart';
 
-var counterKey;
-
 class RequestList extends StatefulWidget {
   const RequestList({super.key});
 
@@ -55,11 +53,19 @@ class _RequestListState extends State<RequestList> {
                           subtitle:
                               Text('Address: ${data.docs[index]['address']}'),
                           onTap: () {
-                            counterKey = index;
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) {
-                                  return ResListinfo();
+                                  return ResListinfo(
+                                    status: data.docs[index]['status'],
+                                    name: data.docs[index]['name'],
+                                    address: data.docs[index]['address'],
+                                    contactnumber: data.docs[index]
+                                        ['contact number'],
+                                    description: data.docs[index]
+                                        ['description'],
+                                    id: data.docs[index]['id'],
+                                  );
                                 },
                               ),
                             );
@@ -124,11 +130,19 @@ class _OnGoingListState extends State<OnGoingList> {
                           subtitle:
                               Text('Address: ${data.docs[index]['address']}'),
                           onTap: () {
-                            counterKey = index;
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) {
-                                  return ResListinfo();
+                                  return ResListinfo(
+                                    status: data.docs[index]['status'],
+                                    name: data.docs[index]['name'],
+                                    address: data.docs[index]['address'],
+                                    contactnumber: data.docs[index]
+                                        ['contact number'],
+                                    description: data.docs[index]
+                                        ['description'],
+                                    id: data.docs[index]['id'],
+                                  );
                                 },
                               ),
                             );

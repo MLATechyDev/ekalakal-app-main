@@ -1,7 +1,5 @@
-import 'package:ekalakal/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-
 import 'package:ekalakal/loginpage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -11,6 +9,9 @@ Future main() async {
 
   runApp(const EkalakalApp());
 }
+// main() {
+//   runApp(const EkalakalApp());
+// }
 
 final navigatorKey = GlobalKey<NavigatorState>();
 

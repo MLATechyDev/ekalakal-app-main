@@ -1,3 +1,6 @@
+import 'package:ekalakal/authentication/storage_services.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,6 +21,11 @@ class _BookPageState extends State<BookPage> {
   final addressController = TextEditingController();
   final contactController = TextEditingController();
   final descriptionController = TextEditingController();
+
+  final FirebaseApi storage = FirebaseApi();
+  var path;
+  var fileName;
+  String _fileName = 'No File Selected!';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,16 +77,11 @@ class _BookPageState extends State<BookPage> {
                       const SizedBox(
                         height: 5,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          btnBook(),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          btnUploadPhoto()
-                        ],
-                      )
+                      btnUploadPhoto(),
+                      const SizedBox(height: 5),
+                      Text(_fileName),
+                      const SizedBox(height: 100),
+                      btnBook(),
                     ],
                   ),
                 ),
@@ -182,9 +185,9 @@ class _BookPageState extends State<BookPage> {
 
   Widget btnBook() => ElevatedButton(
         style: ElevatedButton.styleFrom(
-            minimumSize: const Size(100, 50),
+            minimumSize: const Size(double.infinity, 50),
             shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(30)))),
+                borderRadius: BorderRadius.all(Radius.circular(15)))),
         onPressed: () {
           final isValid = _formkey.currentState!.validate();
           if (!isValid) return;
@@ -195,6 +198,8 @@ class _BookPageState extends State<BookPage> {
               description: descriptionController.text);
 
           createBook(user);
+          fileUpload();
+
           nameTextController.clear();
           addressController.clear();
           contactController.clear();
@@ -210,18 +215,40 @@ class _BookPageState extends State<BookPage> {
         ),
       );
 
-  Widget btnUploadPhoto() => ElevatedButton(
-        onPressed: () {},
+  Widget btnUploadPhoto() => OutlinedButton(
+        onPressed: filePicker,
         style: ElevatedButton.styleFrom(
+          onPrimary: Colors.blue,
           minimumSize: const Size(100, 50),
           shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(30))),
+              borderRadius: BorderRadius.all(Radius.circular(10))),
         ),
         child: const Text(
           "Upload Photo",
           style: TextStyle(fontSize: 18),
         ),
       );
+
+  Future filePicker() async {
+    final result = await FilePicker.platform.pickFiles(
+        allowMultiple: false,
+        type: FileType.custom,
+        allowedExtensions: ['png', 'jpg', 'jpeg']);
+
+    if (result == null) return;
+    path = result.files.single.path!;
+    fileName = result.files.single.name;
+
+    setState(() {
+      _fileName = fileName;
+    });
+
+    // storage.fileUpload(path, fileName).then((value) => print('Done'));
+  }
+
+  Future fileUpload() async {
+    await storage.uploadFile(path, fileName);
+  }
 
   Future createBook(UserInfo user) async {
     final docUser = FirebaseFirestore.instance.collection('appointments').doc();

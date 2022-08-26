@@ -4,8 +4,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../databaseUser/requestlist.dart';
 
 class ResListinfo extends StatefulWidget {
-  const ResListinfo({super.key});
-
+  String name, address, contactnumber;
+  String description;
+  ResListinfo(
+      {Key? key,
+      required this.id,
+      required this.status,
+      required this.name,
+      required this.address,
+      required this.contactnumber,
+      required this.description});
+  String status;
+  String id;
   @override
   State<ResListinfo> createState() => _ResListinfoState();
 }
@@ -21,93 +31,64 @@ class _ResListinfoState extends State<ResListinfo> {
         title: Text('Your Appointment'),
       ),
       body: Container(
-          child: StreamBuilder(
-        stream: resAppInfo,
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return const Center(
-              child: Text('Something went wrong!'),
-            );
-          }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: Text('Loading'),
-            );
-          }
-          final data = snapshot.requireData;
+        padding: EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Appointment status: ${widget.status}',
+              style: const TextStyle(fontSize: 20),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              'Name : ${widget.name}',
+              style: const TextStyle(fontSize: 20),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              'Address : ${widget.address}',
+              style: const TextStyle(fontSize: 20),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              'Contact # : ${widget.contactnumber}',
+              style: const TextStyle(fontSize: 20),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              'Item Description : ${widget.description}',
+              style: const TextStyle(fontSize: 20),
+            ),
+            const SizedBox(
+              height: 50,
+            ),
+            Align(
+                alignment: Alignment.center,
+                child: ElevatedButton(
+                    onPressed: () {
+                      final docUser = FirebaseFirestore.instance
+                          .collection('appointments')
+                          .doc(widget.id);
 
-          return ListView.builder(
-              shrinkWrap: true,
-              itemCount: 1,
-              itemBuilder: (context, index) {
-                return Align(
-                  alignment: Alignment.topLeft,
-                  child: Container(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          height: 200,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Appointment status: ${data.docs[index = counterKey]['status']}',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                'Name: ${data.docs[index = counterKey]['name']}',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                'Address: ${data.docs[index = counterKey]['address']}',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                'Contact #: ${data.docs[index = counterKey]['contact number']}',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                'Description: ${data.docs[index = counterKey]['description']}',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            ],
-                          ),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            FirebaseFirestore.instance
-                                .collection('appointments')
-                                .doc(data.docs[index]['id'])
-                                .delete();
+                      docUser.delete();
 
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text(
-                            'Cancel Appointment',
-                            style: TextStyle(fontSize: 15),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                );
-              });
-        },
-      )),
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      'Cancel Appointment',
+                      style: TextStyle(fontSize: 20),
+                    )))
+          ],
+        ),
+      ),
     );
   }
 }

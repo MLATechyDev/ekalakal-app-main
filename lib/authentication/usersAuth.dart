@@ -1,5 +1,6 @@
 class UserLoginPosition {
   String id;
+
   final String email, position;
 
   UserLoginPosition({

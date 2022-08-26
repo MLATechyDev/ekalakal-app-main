@@ -233,7 +233,7 @@ class _RegistrationPageUIState extends State<RegistrationPageUI> {
     }
 
     //Navigator.of(context) not working!!
-    navigatorKey.currentState!.popUntil((route) => route.isFirst);
+    navigatorKey.currentState!.pop();
   }
 
   Future createUserPosition(UserLoginPosition user) async {

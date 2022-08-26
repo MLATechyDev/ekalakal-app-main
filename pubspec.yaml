@@ -41,6 +41,7 @@ dependencies:
 
   #Firebase Database
   cloud_firestore: ^3.4.3
+  firebase_storage: ^10.3.7
 
   #Email Validator
   email_validator: ^2.1.17
@@ -56,6 +57,14 @@ dependencies:
 
   #Keyboard Dismisser
   keyboard_dismisser: ^3.0.0
+
+  #File Picker
+  file_picker: ^5.0.1
+
+  #Google Map
+  #google_maps_flutter: ^2.1.12
+  
+  #geolocator: ^8.0.1
   
   google_fonts: ^2.0.0
 

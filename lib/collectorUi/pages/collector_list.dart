@@ -1,3 +1,4 @@
+import 'package:ekalakal/collectorUi/collectorMaps/collectorMaps.dart';
 import 'package:flutter/material.dart';
 
 class CollectorList extends StatefulWidget {
@@ -12,7 +13,11 @@ class _CollectorListState extends State<CollectorList> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-      child: Center(child: Text('List')),
+      child: Center(
+          child: ElevatedButton(
+        onPressed: () {},
+        child: const Text('Maps'),
+      )),
     ));
   }
 }
