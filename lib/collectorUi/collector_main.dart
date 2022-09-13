@@ -38,9 +38,13 @@ class _CollectorMainState extends State<CollectorMain> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'E-KALAKAL',
+          index == 0
+              ? 'DASHBOARD'
+              : index == 1
+                  ? 'MAPS'
+                  : 'PROFILE',
           style: GoogleFonts.alfaSlabOne(
-            textStyle: const TextStyle(fontSize: 30, color: Colors.black),
+            textStyle: const TextStyle(fontSize: 30, color: Colors.white),
           ),
         ),
       ),
@@ -54,7 +58,7 @@ class _CollectorMainState extends State<CollectorMain> {
             height: 60,
             backgroundColor: Colors.transparent,
             animationDuration: const Duration(milliseconds: 300),
-            color: Colors.blue,
+            color: Colors.lightBlue,
             items: items,
             onTap: (index) {
               setState(() {

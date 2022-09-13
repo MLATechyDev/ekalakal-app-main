@@ -60,17 +60,29 @@ dependencies:
 
   #File Picker
   file_picker: ^5.0.1
+  image_picker: ^0.8.5+3
+  transparent_image: ^2.0.0
+
+  #DateTime Formatter
+  intl: ^0.17.0
 
   #Google Map
-  #google_maps_flutter: ^2.1.12
+  google_maps_flutter: ^2.2.0
   
-  #geolocator: ^8.0.1
+  geolocator: ^8.0.1
   
   google_fonts: ^2.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  #Launcher icon
+  flutter_launcher_icons: ^0.10.0
+
+flutter_icons:
+  android: true
+  image_path: "assets/11zon_resized.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ekalakal/authentication/emailverification.dart';
+import 'package:ekalakal/authentication/resetpassword.dart';
 import 'package:ekalakal/wrapper.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'registrationpage.dart';
 import 'package:ekalakal/main.dart';
@@ -38,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Text("Something went wrong!"),
           );
         } else if (snapshot.hasData) {
-          return UserWrap();
+          return const EmailVerification();
         } else {
           return LoginPageUI();
         }
@@ -89,10 +92,13 @@ class _LoginPageUIState extends State<LoginPageUI> {
                     SafeArea(
                       child: Padding(
                         padding: const EdgeInsets.only(top: 8),
-                        child: Image.asset(
-                          'assets/ekalakal_logo.png',
-                          height: 150,
-                          width: 150,
+                        child: Opacity(
+                          opacity: 0.8,
+                          child: Image.asset(
+                            'assets/ekalakal_logo.png',
+                            height: 150,
+                            width: 150,
+                          ),
                         ),
                       ),
                     ),
@@ -116,7 +122,7 @@ class _LoginPageUIState extends State<LoginPageUI> {
                 child: Column(
                   children: [
                     //ErrorBox
-                    errorMsgBox(),
+                    // errorMsgBox(),
                     //EmailTextField
                     TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -172,13 +178,18 @@ class _LoginPageUIState extends State<LoginPageUI> {
                             minimumSize: const Size(double.infinity, 50)),
                         child: const Text(
                           "Sign In",
-                          style: TextStyle(fontSize: 20),
+                          style: TextStyle(fontSize: 20, color: Colors.white),
                         ),
                       ),
                     ),
                     //ForgotPasswordButton
                     TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return const ResetPassword();
+                          }));
+                        },
                         child: const Text("Forgot Password?")),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -204,40 +215,40 @@ class _LoginPageUIState extends State<LoginPageUI> {
     );
   }
 
-  Widget errorMsgBox() {
-    if (_errorMsg != null) {
-      return Container(
-        decoration: const BoxDecoration(
-            color: Colors.amberAccent,
-            borderRadius: BorderRadius.all(Radius.circular(30))),
-        width: double.infinity,
-        padding: const EdgeInsets.all(8.0),
-        height: 50,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              const Icon(Icons.error_outline),
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Expanded(child: AutoSizeText(_errorMsg)),
-              ),
-              IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _errorMsg = null;
-                    });
-                  },
-                  icon: const Icon(Icons.close))
-            ],
-          ),
-        ),
-      );
-    }
-    return const SizedBox(
-      height: 0,
-    );
-  }
+  // Widget errorMsgBox() {
+  //   if (_errorMsg != null) {
+  //     return Container(
+  //       decoration: const BoxDecoration(
+  //           color: Colors.amberAccent,
+  //           borderRadius: BorderRadius.all(Radius.circular(30))),
+  //       width: double.infinity,
+  //       padding: const EdgeInsets.all(8.0),
+  //       height: 50,
+  //       child: SingleChildScrollView(
+  //         scrollDirection: Axis.horizontal,
+  //         child: Row(
+  //           children: [
+  //             const Icon(Icons.error_outline),
+  //             Padding(
+  //               padding: const EdgeInsets.only(left: 8.0),
+  //               child: Expanded(child: AutoSizeText(_errorMsg)),
+  //             ),
+  //             IconButton(
+  //                 onPressed: () {
+  //                   setState(() {
+  //                     _errorMsg = null;
+  //                   });
+  //                 },
+  //                 icon: const Icon(Icons.close))
+  //           ],
+  //         ),
+  //       ),
+  //     );
+  //   }
+  //   return const SizedBox(
+  //     height: 0,
+  //   );
+  // }
 
   Future signIn() async {
     final isValid = formKey.currentState!.validate();
@@ -255,11 +266,23 @@ class _LoginPageUIState extends State<LoginPageUI> {
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
+      Fluttertoast.showToast(
+        msg: 'Login Succeed',
+        fontSize: 15,
+        backgroundColor: Colors.amber,
+        textColor: Colors.black,
+      );
     } on FirebaseAuthException catch (e) {
       print(e);
-      setState(() {
-        _errorMsg = e.message.toString();
-      });
+      Fluttertoast.showToast(
+        msg: e.message.toString(),
+        fontSize: 15,
+        backgroundColor: Colors.amber,
+        textColor: Colors.black,
+      );
+      // setState(() {
+      //   _errorMsg = e.message.toString();
+      // });
     }
 
     //Navigator.of(context) not working!!

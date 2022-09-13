@@ -1,4 +1,5 @@
 import 'package:ekalakal/residentUi/databaseUser/users.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../databaseUser/res_app_info.dart';
@@ -13,7 +14,7 @@ class RequestList extends StatefulWidget {
 class _RequestListState extends State<RequestList> {
   final Stream<QuerySnapshot> appointments = FirebaseFirestore.instance
       .collection('appointments')
-      .where('status', isEqualTo: 'pending')
+      .where('userid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
       .snapshots();
 
   @override
@@ -40,41 +41,62 @@ class _RequestListState extends State<RequestList> {
                 shrinkWrap: true,
                 itemCount: data.size,
                 itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      Container(
-                        decoration: const BoxDecoration(
-                            color: Colors.amberAccent,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
-                        child: ListTile(
-                          leading: Icon(Icons.star),
-                          title: Text('Name: ${data.docs[index]['name']}'),
-                          subtitle:
-                              Text('Address: ${data.docs[index]['address']}'),
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return ResListinfo(
-                                    status: data.docs[index]['status'],
-                                    name: data.docs[index]['name'],
-                                    address: data.docs[index]['address'],
-                                    contactnumber: data.docs[index]
-                                        ['contact number'],
-                                    description: data.docs[index]
-                                        ['description'],
-                                    id: data.docs[index]['id'],
-                                  );
-                                },
-                              ),
-                            );
-                          },
+                  if (data.docs[index]['status'] == 'pending') {
+                    return Column(
+                      children: [
+                        Container(
+                          decoration: const BoxDecoration(
+                              color: Colors.amberAccent,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          child: ListTile(
+                            leading: Icon(Icons.star),
+                            title: Text(
+                              'Name: ${data.docs[index]['name']}',
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle:
+                                Text('Address: ${data.docs[index]['address']}'),
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return ResListinfo(
+                                      status: data.docs[index]['status'],
+                                      name: data.docs[index]['name'],
+                                      address: data.docs[index]['address'],
+                                      contactnumber: data.docs[index]
+                                          ['contact number'],
+                                      description: data.docs[index]
+                                          ['description'],
+                                      id: data.docs[index]['id'],
+                                      acceptBy: data.docs[index]['acceptBy'],
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            trailing: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  data.docs[index]['time'],
+                                  style: const TextStyle(color: Colors.black54),
+                                ),
+                                Text(
+                                  data.docs[index]['date'],
+                                  style: const TextStyle(color: Colors.black54),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                      const Padding(padding: EdgeInsets.only(top: 8.0))
-                    ],
-                  );
+                        const Padding(padding: EdgeInsets.only(top: 8.0))
+                      ],
+                    );
+                  }
+                  return Container();
                 });
           }),
     );
@@ -89,9 +111,9 @@ class OnGoingList extends StatefulWidget {
 }
 
 class _OnGoingListState extends State<OnGoingList> {
-  Stream<QuerySnapshot> appointments = FirebaseFirestore.instance
+  final Stream<QuerySnapshot> appointments = FirebaseFirestore.instance
       .collection('appointments')
-      .where('status', isEqualTo: 'ongoing')
+      .where('userid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
       .snapshots();
   @override
   Widget build(BuildContext context) {
@@ -117,41 +139,49 @@ class _OnGoingListState extends State<OnGoingList> {
                 shrinkWrap: true,
                 itemCount: data.size,
                 itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      Container(
-                        decoration: const BoxDecoration(
-                            color: Colors.lightBlue,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
-                        child: ListTile(
-                          leading: Icon(Icons.star),
-                          title: Text('Name: ${data.docs[index]['name']}'),
-                          subtitle:
-                              Text('Address: ${data.docs[index]['address']}'),
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return ResListinfo(
-                                    status: data.docs[index]['status'],
-                                    name: data.docs[index]['name'],
-                                    address: data.docs[index]['address'],
-                                    contactnumber: data.docs[index]
-                                        ['contact number'],
-                                    description: data.docs[index]
-                                        ['description'],
-                                    id: data.docs[index]['id'],
-                                  );
-                                },
-                              ),
-                            );
-                          },
+                  if (data.docs[index]['status'] == 'ongoing') {
+                    return Column(
+                      children: [
+                        Container(
+                          decoration: const BoxDecoration(
+                              color: Colors.lightBlue,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          child: ListTile(
+                            textColor: Colors.white,
+                            leading: const Icon(Icons.star),
+                            title: Text(
+                              'Name: ${data.docs[index]['name']}',
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle:
+                                Text('Address: ${data.docs[index]['address']}'),
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return ResListinfo(
+                                        status: data.docs[index]['status'],
+                                        name: data.docs[index]['name'],
+                                        address: data.docs[index]['address'],
+                                        contactnumber: data.docs[index]
+                                            ['contact number'],
+                                        description: data.docs[index]
+                                            ['description'],
+                                        id: data.docs[index]['id'],
+                                        acceptBy: data.docs[index]['acceptBy']);
+                                  },
+                                ),
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                      const Padding(padding: EdgeInsets.only(top: 8.0))
-                    ],
-                  );
+                        const Padding(padding: EdgeInsets.only(top: 8.0))
+                      ],
+                    );
+                  }
+                  return Container();
                 });
           }),
     );

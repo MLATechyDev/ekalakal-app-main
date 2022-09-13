@@ -14,6 +14,8 @@ class _CollectorDashboardState extends State<CollectorDashboard> {
       .collection('appointments')
       .where('status', isEqualTo: 'pending')
       .snapshots();
+
+  int appointmentCount = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,30 +39,9 @@ class _CollectorDashboardState extends State<CollectorDashboard> {
   Widget topUi() => Container(
         height: 200,
         width: double.infinity,
-        color: Colors.grey[300],
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text(
-                'No. of Appointments: 20 ',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 20),
-              Text(
-                'On Going Appointments: 20',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
-            ],
-          ),
+        child: Image.asset(
+          'assets/bg_junk.jpg',
+          fit: BoxFit.cover,
         ),
       );
 
@@ -88,26 +69,47 @@ class _CollectorDashboardState extends State<CollectorDashboard> {
                   padding: const EdgeInsets.all(3.0),
                   child: Container(
                     decoration: const BoxDecoration(
-                        color: Colors.amberAccent,
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                      color: Colors.amberAccent,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                    ),
                     child: ListTile(
-                        leading: const Icon(Icons.star),
-                        title: Text('Name: ${data.docs[index]['name']}'),
-                        subtitle:
-                            Text('Address: ${data.docs[index]['address']}'),
-                        onTap: () {
-                          final String id = data.docs[index]['id'];
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => CollectorAppInfo(
-                                    name: data.docs[index]['name'],
-                                    address: data.docs[index]['address'],
-                                    contactnumber: data.docs[index]
-                                        ['contact number'],
-                                    description: data.docs[index]
-                                        ['description'],
-                                    id: id,
-                                  )));
-                        }),
+                      leading: const Icon(Icons.star),
+                      title: Text(
+                        'Name: ${data.docs[index]['name']}',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text('Address: ${data.docs[index]['address']}'),
+                      onTap: () {
+                        final String id = data.docs[index]['id'];
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => CollectorAppInfo(
+                              name: data.docs[index]['name'],
+                              address: data.docs[index]['address'],
+                              contactnumber: data.docs[index]['contact number'],
+                              description: data.docs[index]['description'],
+                              id: id,
+                              acceptBy: data.docs[index]['acceptBy'],
+                            ),
+                          ),
+                        );
+                      },
+                      trailing: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            data.docs[index]['time'],
+                            style: const TextStyle(color: Colors.black54),
+                          ),
+                          Text(
+                            data.docs[index]['date'],
+                            style: const TextStyle(color: Colors.black54),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 );
               });

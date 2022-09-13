@@ -46,7 +46,7 @@ class WrapperPage extends StatelessWidget {
             height: 50,
           ),
           const Text(
-            "Login As:",
+            "Sign in As:",
             style: TextStyle(
               fontSize: 20,
             ),
@@ -88,6 +88,7 @@ class WrapperPage extends StatelessWidget {
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(30))),
             minimumSize: const Size(100, 50),
+            onPrimary: Colors.white,
             primary: Colors.red),
         child: const Text(
           "Resident",
@@ -114,6 +115,7 @@ class WrapperPage extends StatelessWidget {
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(30))),
             minimumSize: const Size(100, 50),
+            onPrimary: Colors.white,
             primary: Colors.lightBlue),
         child: const Text(
           "Collector",

@@ -41,13 +41,16 @@ class _ResidentMainAppState extends State<ResidentMainApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue[100],
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'E-KALAKAL',
+          index == 0
+              ? 'DASHBOARD'
+              : index == 1
+                  ? 'BOOKING'
+                  : 'PROFILE',
           style: GoogleFonts.alfaSlabOne(
-            textStyle: const TextStyle(fontSize: 30, color: Colors.black),
+            textStyle: const TextStyle(fontSize: 30, color: Colors.white),
           ),
         ),
       ),
@@ -61,7 +64,7 @@ class _ResidentMainAppState extends State<ResidentMainApp> {
           height: 60,
           backgroundColor: Colors.transparent,
           animationDuration: const Duration(milliseconds: 300),
-          color: Colors.blue,
+          color: Colors.lightBlue,
           items: items,
           onTap: (index) => setState(() => this.index = index),
         ),

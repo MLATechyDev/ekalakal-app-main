@@ -23,7 +23,7 @@ class EkalakalApp extends StatelessWidget {
     return MaterialApp(
         title: "E KALAKAL APP",
         navigatorKey: navigatorKey,
-        theme: ThemeData(primarySwatch: Colors.blue),
+        theme: ThemeData(primarySwatch: Colors.lightBlue),
         debugShowCheckedModeBanner: false,
         home: const LoginPage());
   }

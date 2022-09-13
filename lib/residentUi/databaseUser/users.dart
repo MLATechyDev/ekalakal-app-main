@@ -5,34 +5,51 @@ import 'package:firebase_auth/firebase_auth.dart';
 class UserInfo {
   String id;
   String status;
+  String useruid;
+  String date;
+  String time;
+  String acceptBy;
   final String name;
   final String address;
   final String contactnumber;
   final String description;
+  // final String imageUrl;
 
   UserInfo({
+    this.acceptBy = '',
+    this.date = '',
+    this.time = '',
     this.id = '',
     this.status = '',
+    this.useruid = '',
     required this.name,
     required this.address,
     required this.contactnumber,
     required this.description,
+    // required this.imageUrl,
   });
 
   Map<String, dynamic> toJson() => {
+        'acceptBy': acceptBy,
+        'date': date,
+        'time': time,
+        'userid': useruid,
         'id': id,
         'status': status,
         'name': name,
         'address': address,
         'contact number': contactnumber,
         'description': description,
+        // 'imageURL': imageUrl,
       };
 
   static UserInfo fromJson(Map<String, dynamic> json) => UserInfo(
-      name: json['name'],
-      address: json['address'],
-      contactnumber: json['contactnumber'],
-      description: json['description']);
+        name: json['name'],
+        address: json['address'],
+        contactnumber: json['contactnumber'],
+        description: json['description'],
+      );
+  // imageUrl: json['imageURL']);
 }
 
 Stream<List<UserInfo>> readUser() => FirebaseFirestore.instance

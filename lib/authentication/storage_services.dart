@@ -13,9 +13,26 @@ class FirebaseApi {
   ) async {
     File file = File(filePath);
     try {
-      await storage.ref('test/$fileName').putFile(file);
+      await storage.ref('profilePic/$fileName').putFile(file);
     } on firebase_core.FirebaseException catch (e) {
       print(e);
     }
+  }
+
+  Future<firebase_storage.ListResult> listFiles() async {
+    firebase_storage.ListResult result =
+        await storage.ref('profilePic').listAll();
+
+    result.items.forEach((firebase_storage.Reference ref) {
+      print('Found file: $ref');
+    });
+    return result;
+  }
+
+  Future<String> downloadURL(String imageName) async {
+    String downloadURL =
+        await storage.ref('profilePic/$imageName').getDownloadURL();
+
+    return downloadURL;
   }
 }

@@ -37,8 +37,6 @@ class _UserWrapState extends State<UserWrap> {
           final data = snapshot.requireData;
           int index = 0;
 
-          print(data.docs[index]['position']);
-
           return data.docs[index]['position'] == 'collector'
               ? CollectorMain()
               : ResidentMainApp();

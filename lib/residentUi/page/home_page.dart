@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,11 +12,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool _requestList = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      backgroundColor: Colors.blue[100],
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -45,6 +43,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
+                            onPrimary: Colors.white,
                             minimumSize: Size(150, 50),
                             shape: StadiumBorder(),
                           ),
@@ -59,9 +58,10 @@ class _HomePageState extends State<HomePage> {
                           ),
                           onPressed: () {
                             Fluttertoast.showToast(
-                              msg: 'Pending Request',
-                              fontSize: 18,
-                            );
+                                msg: 'Pending Request',
+                                fontSize: 18,
+                                backgroundColor: Colors.amber,
+                                textColor: Colors.black);
 
                             setState(() {
                               _requestList = true;
@@ -85,9 +85,10 @@ class _HomePageState extends State<HomePage> {
                           ),
                           onPressed: () {
                             Fluttertoast.showToast(
-                              msg: 'On Going Transaction',
-                              fontSize: 18,
-                            );
+                                msg: 'On Going Transaction',
+                                fontSize: 18,
+                                backgroundColor: Colors.amber,
+                                textColor: Colors.black);
                             setState(() {
                               _requestList = false;
                             });

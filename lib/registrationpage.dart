@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ekalakal/authentication/userPosition.dart';
 import 'package:ekalakal/loginpage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:email_validator/email_validator.dart';
@@ -53,10 +55,13 @@ class _RegistrationPageUIState extends State<RegistrationPageUI> {
                     SafeArea(
                       child: Padding(
                         padding: const EdgeInsets.only(top: 8),
-                        child: Image.asset(
-                          'assets/ekalakal_logo.png',
-                          height: 150,
-                          width: 150,
+                        child: Opacity(
+                          opacity: 0.8,
+                          child: Image.asset(
+                            'assets/ekalakal_logo.png',
+                            height: 150,
+                            width: 150,
+                          ),
                         ),
                       ),
                     ),
@@ -74,7 +79,7 @@ class _RegistrationPageUIState extends State<RegistrationPageUI> {
                   ],
                 ),
               ),
-              errorMsgBox(),
+              // errorMsgBox(),
               Padding(
                 padding: const EdgeInsets.only(
                     right: 8, left: 8, bottom: 8, top: 50),
@@ -129,14 +134,10 @@ class _RegistrationPageUIState extends State<RegistrationPageUI> {
                         padding: const EdgeInsets.only(top: 8.0),
                         child: ElevatedButton(
                           onPressed: () {
-                            final user = UserLoginPosition(
-                                email: emailController.text,
-                                position: widget.loginAs);
-
                             signUp();
-                            createUserPosition(user);
                           },
                           style: ElevatedButton.styleFrom(
+                              onPrimary: Colors.white,
                               shape: const RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(50))),
@@ -173,40 +174,40 @@ class _RegistrationPageUIState extends State<RegistrationPageUI> {
     );
   }
 
-  Widget errorMsgBox() {
-    if (_errorMsg != null) {
-      return Container(
-        decoration: const BoxDecoration(
-            color: Colors.amberAccent,
-            borderRadius: BorderRadius.all(Radius.circular(30))),
-        width: double.infinity,
-        padding: const EdgeInsets.all(8.0),
-        height: 50,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              const Icon(Icons.error_outline),
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Expanded(child: AutoSizeText(_errorMsg)),
-              ),
-              IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _errorMsg = null;
-                    });
-                  },
-                  icon: const Icon(Icons.close))
-            ],
-          ),
-        ),
-      );
-    }
-    return const SizedBox(
-      height: 0,
-    );
-  }
+  // Widget errorMsgBox() {
+  //   if (_errorMsg != null) {
+  //     return Container(
+  //       decoration: const BoxDecoration(
+  //           color: Colors.amberAccent,
+  //           borderRadius: BorderRadius.all(Radius.circular(30))),
+  //       width: double.infinity,
+  //       padding: const EdgeInsets.all(8.0),
+  //       height: 50,
+  //       child: SingleChildScrollView(
+  //         scrollDirection: Axis.horizontal,
+  //         child: Row(
+  //           children: [
+  //             const Icon(Icons.error_outline),
+  //             Padding(
+  //               padding: const EdgeInsets.only(left: 8.0),
+  //               child: Expanded(child: AutoSizeText(_errorMsg)),
+  //             ),
+  //             IconButton(
+  //                 onPressed: () {
+  //                   setState(() {
+  //                     _errorMsg = null;
+  //                   });
+  //                 },
+  //                 icon: const Icon(Icons.close))
+  //           ],
+  //         ),
+  //       ),
+  //     );
+  //   }
+  //   return const SizedBox(
+  //     height: 0,
+  //   );
+  // }
 
   Future signUp() async {
     final isValid = _formkey.currentState!.validate();
@@ -218,22 +219,41 @@ class _RegistrationPageUIState extends State<RegistrationPageUI> {
         builder: (context) => const Center(
               child: CircularProgressIndicator(),
             ));
-
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
+      final user = UserLoginPosition(
+        email: emailController.text,
+        position: widget.loginAs,
+        name: 'set now',
+        address: 'set now',
+        contactnumber: 'set now',
+      );
+      createUserPosition(user);
+      Fluttertoast.showToast(
+        msg: 'Account Created',
+        fontSize: 15,
+        backgroundColor: Colors.amber,
+        textColor: Colors.black,
+      );
     } on FirebaseAuthException catch (e) {
       print(e);
+      Fluttertoast.showToast(
+        msg: e.message.toString(),
+        fontSize: 15,
+        backgroundColor: Colors.amber,
+        textColor: Colors.black,
+      );
 
-      setState(() {
-        _errorMsg = e.message.toString();
-      });
+      // setState(() {
+      //   _errorMsg = e.message.toString();
+      // });
     }
 
     //Navigator.of(context) not working!!
-    navigatorKey.currentState!.pop();
+    navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 
   Future createUserPosition(UserLoginPosition user) async {
