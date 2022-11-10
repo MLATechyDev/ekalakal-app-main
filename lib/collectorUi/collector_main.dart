@@ -43,9 +43,9 @@ class _CollectorMainState extends State<CollectorMain> {
         centerTitle: true,
         title: Text(
           index == 0
-              ? 'DASHBOARD'
+              ? 'MAPS'
               : index == 1
-                  ? 'MAPS'
+                  ? 'DASHBOARD'
                   : 'PROFILE',
           style: GoogleFonts.passionOne(
             textStyle: const TextStyle(fontSize: 35, color: Colors.white),
