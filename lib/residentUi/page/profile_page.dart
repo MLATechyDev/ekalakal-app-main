@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ekalakal/authentication/storage_services.dart';
+import 'package:ekalakal/information/edit_profile.dart';
 import 'package:ekalakal/information/profile_upload.dart';
-import 'package:ekalakal/information/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -102,21 +101,38 @@ class _ProfilePageState extends State<ProfilePage> {
               if (snapshot.connectionState == ConnectionState.done &&
                   snapshot.hasData) {
                 return Container(
-                  padding: const EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Colors.lightBlue[100],
                       borderRadius: BorderRadius.circular(100)),
-                  child: CircleAvatar(
-                    radius: profileHeight / 2,
-                    backgroundColor: Colors.grey,
-                    backgroundImage: !snapshot.hasData
-                        ? const NetworkImage(
-                            'https://www.salisburyut.com/wp-content/uploads/2020/09/avatar-1-scaled.jpeg')
-                        : NetworkImage(snapshot.data!),
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(100)),
+                    child: CircleAvatar(
+                      radius: profileHeight / 2,
+                      backgroundColor: Colors.grey,
+                      backgroundImage: NetworkImage(snapshot.data!),
+                    ),
                   ),
                 );
               }
-              return Container();
+              return Container(
+                padding: EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                    color: Colors.lightBlue[100],
+                    borderRadius: BorderRadius.circular(100)),
+                child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(100)),
+                    child: Icon(
+                      Icons.person,
+                      size: 70,
+                    )),
+              );
             }),
       );
 
@@ -148,28 +164,21 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     );
                   }
+
                   if (snapshot.hasData) {
                     return Text(
-                      snapshot.requireData.docs.first['name'],
+                      '${snapshot.requireData.docs.first['firstname']} ${snapshot.requireData.docs.first['middlename']} ${snapshot.requireData.docs.first['lastname']}',
                       style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold),
+                          fontSize: 18, fontWeight: FontWeight.bold),
                     );
                   }
                   return Container();
                 }),
-            // Text(
-            //   user.email!,
-            //   style: const TextStyle(
-            //     fontWeight: FontWeight.bold,
-            //     fontSize: 30,
-            //   ),
-            // ),
             const Divider(
-              height: 30,
-              thickness: 1,
+              height: 20,
+              thickness: 2,
               indent: 20,
               endIndent: 20,
-              color: Colors.black,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 20),
@@ -182,22 +191,11 @@ class _ProfilePageState extends State<ProfilePage> {
                       onPressed: () {
                         Navigator.of(context)
                             .push(MaterialPageRoute(builder: (context) {
-                          return const UserProfile();
+                          return EditProfile();
                         }));
                       },
                       icon: const Icon(Icons.person),
                       label: const Text('Profile Information'),
-                      style: TextButton.styleFrom(
-                        textStyle: const TextStyle(
-                          fontSize: 18,
-                          inherit: false,
-                        ),
-                      ),
-                    ),
-                    TextButton.icon(
-                      onPressed: () {},
-                      icon: const Icon(Icons.history),
-                      label: const Text('History'),
                       style: TextButton.styleFrom(
                         textStyle: const TextStyle(
                           fontSize: 18,

@@ -1,17 +1,15 @@
 import 'dart:io';
 
-import 'package:ekalakal/authentication/storage_services.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:ekalakal/information/edit_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart' as currentuid;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../databaseUser/users.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:path/path.dart';
 
 class BookPage extends StatefulWidget {
   BookPage({Key? key}) : super(key: key);
@@ -29,11 +27,9 @@ class _BookPageState extends State<BookPage> {
   final contactController = TextEditingController();
   final descriptionController = TextEditingController();
 
-  // final FirebaseApi storage = FirebaseApi();
-
-  // var path;
-  // var fileName;
-  // String _fileName = 'No File Selected';
+  late String longitude;
+  late String latitude;
+  bool isVerify = false;
 
   final ImagePicker _picker = ImagePicker();
   List<XFile> _selectedFiles = [];
@@ -48,60 +44,107 @@ class _BookPageState extends State<BookPage> {
       body: Container(
         margin: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const Text(
-                'Book your Kalakal',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1,
-                ),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              const SizedBox(height: 10),
-              Center(
-                child: Form(
-                  key: _formkey,
-                  child: Column(
-                    children: [
-                      textFieldScreen(),
-                      // buildTextName(),
-                      // const SizedBox(
-                      //   height: 5,
-                      // ),
-                      // buildTextAddress(),
-                      // const SizedBox(
-                      //   height: 5,
-                      // ),
-                      // buildTextContact(),
-                      // const SizedBox(
-                      //   height: 5,
-                      // ),
-                      buildDescription(),
-                      const SizedBox(
-                        height: 5,
-                      ),
-
-                      // SingleChildScrollView(
-                      //     scrollDirection: Axis.horizontal,
-                      //     child: gridBuilder()),
-                      // Text(_fileName),
-                    ],
+          child: StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('userpos')
+                .where('email',
+                    isEqualTo:
+                        currentuid.FirebaseAuth.instance.currentUser!.email)
+                .snapshots(),
+            builder: (BuildContext, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError) {
+                return SizedBox(
+                  child: Center(
+                    child: Text('Something went wrong'),
                   ),
-                ),
-              ),
-              btnUploadPhoto(),
-              const SizedBox(height: 8),
-              Center(child: gridBuilder()),
-              const SizedBox(height: 30),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: btnBook(),
-              ),
-            ],
+                );
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return SizedBox(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+              if (snapshot.requireData.docs.first['isVerify'] == 'new') {
+                isVerify = true;
+              } else {
+                isVerify = false;
+              }
+              return isVerify
+                  ? Container(
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Text(
+                              'Setup Your Profile First',
+                              style: GoogleFonts.bebasNeue(
+                                textStyle: const TextStyle(
+                                  fontSize: 20,
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) {
+                                  return EditProfile();
+                                }));
+                              },
+                              child: Text(
+                                'Setup now',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  : Column(
+                      children: [
+                        Text(
+                          'Book Your Kalakal',
+                          style: GoogleFonts.bebasNeue(
+                            textStyle: const TextStyle(
+                              fontSize: 35,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        const SizedBox(height: 10),
+                        Center(
+                          child: Form(
+                            key: _formkey,
+                            child: Column(
+                              children: [
+                                textFieldScreen(),
+                                buildDescription(),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        btnUploadPhoto(),
+                        const SizedBox(height: 8),
+                        Center(child: gridBuilder()),
+                        const SizedBox(height: 30),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: btnBook(),
+                        ),
+                      ],
+                    );
+            },
           ),
         ),
       ),
@@ -134,7 +177,6 @@ class _BookPageState extends State<BookPage> {
           }
         },
         controller: nameTextController,
-        textAlign: TextAlign.right,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.zero,
           labelText: 'Name',
@@ -144,7 +186,7 @@ class _BookPageState extends State<BookPage> {
             onPressed: () => nameTextController.clear(),
           ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(10),
           ),
         ),
       );
@@ -160,7 +202,6 @@ class _BookPageState extends State<BookPage> {
           }
         },
         controller: addressController,
-        textAlign: TextAlign.right,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.zero,
           labelText: 'Address',
@@ -170,7 +211,7 @@ class _BookPageState extends State<BookPage> {
             onPressed: () => addressController.clear(),
           ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(10),
           ),
         ),
       );
@@ -185,7 +226,6 @@ class _BookPageState extends State<BookPage> {
           }
         },
         controller: contactController,
-        textAlign: TextAlign.right,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.zero,
           labelText: 'Contact Number',
@@ -195,7 +235,7 @@ class _BookPageState extends State<BookPage> {
             onPressed: () => contactController.clear(),
           ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(10),
           ),
         ),
         keyboardType: TextInputType.phone,
@@ -222,8 +262,8 @@ class _BookPageState extends State<BookPage> {
             onPrimary: Colors.white,
             minimumSize: const Size(double.infinity, 50),
             shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(15)))),
-        onPressed: () {
+                borderRadius: BorderRadius.all(Radius.circular(25)))),
+        onPressed: () async {
           final isValid = _formkey.currentState!.validate();
           if (!isValid) return;
 
@@ -232,7 +272,10 @@ class _BookPageState extends State<BookPage> {
             address: addressController.text,
             contactnumber: contactController.text,
             description: descriptionController.text,
+            longitude: longitude,
+            latitude: latitude,
           );
+
           // imageUrl: _fileName == 'No File Selected!'
           //     ? 'No File Selected'
           //     : _fileName);
@@ -242,6 +285,9 @@ class _BookPageState extends State<BookPage> {
             createBook(user);
             uploadFunction(_selectedFiles);
             descriptionController.clear();
+            setState(() {
+              _selectedFiles.clear();
+            });
             Fluttertoast.showToast(
                 msg: 'Book Successfully',
                 fontSize: 18,
@@ -255,9 +301,15 @@ class _BookPageState extends State<BookPage> {
                 textColor: Colors.black);
           }
         },
-        child: const Text(
-          "Book",
-          style: TextStyle(fontSize: 18),
+        child: Text(
+          'Book',
+          style: GoogleFonts.bebasNeue(
+            textStyle: const TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1,
+            ),
+          ),
         ),
       );
 
@@ -269,16 +321,22 @@ class _BookPageState extends State<BookPage> {
           onPrimary: Colors.blue,
           minimumSize: const Size(100, 50),
           shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10))),
+              borderRadius: BorderRadius.all(Radius.circular(25))),
         ),
-        child: const Text(
-          "Upload Photo",
-          style: TextStyle(fontSize: 18),
+        child: Text(
+          'Upload Photo',
+          style: GoogleFonts.bebasNeue(
+            textStyle: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1,
+            ),
+          ),
         ),
       );
 
   Future selectImage() async {
-    if (_selectedFiles != null) {
+    if (_selectedFiles != 0) {
       _selectedFiles.clear();
     }
     try {
@@ -311,6 +369,7 @@ class _BookPageState extends State<BookPage> {
           );
         }
         final data = snapshot.requireData;
+
         return ListView.builder(
           shrinkWrap: true,
           itemCount: data.size,
@@ -318,15 +377,17 @@ class _BookPageState extends State<BookPage> {
             nameTextController.text = data.docs[index]['name'];
             addressController.text = data.docs[index]['address'];
             contactController.text = data.docs[index]['contact number'];
+            longitude = data.docs[index]['longitude'];
+            latitude = data.docs[index]['latitude'];
             return Column(
               children: [
                 buildTextName(),
                 const SizedBox(
-                  height: 5,
+                  height: 8,
                 ),
                 buildTextAddress(),
                 const SizedBox(
-                  height: 5,
+                  height: 8,
                 ),
                 buildTextContact(),
                 const SizedBox(
@@ -338,26 +399,6 @@ class _BookPageState extends State<BookPage> {
         );
       });
 
-  // Future filePicker() async {
-  //   final result = await FilePicker.platform.pickFiles(
-  //       allowMultiple: true,
-  //       type: FileType.custom,
-  //       allowedExtensions: ['png', 'jpg', 'jpeg']);
-
-  //   if (result == null) return;
-  //   path = result.files.single.path!;
-  //   fileName = result.files.single.name;
-
-  //   setState(() {
-  //     _fileName = fileName;
-  //   });
-
-  //   // storage.fileUpload(path, fileName).then((value) => print('Done'));
-  // }
-
-  // Future fileUpload() async {
-  //   await storage.uploadFile(path, fileName);
-  // }
 //TODO upload mutiphoto
   void uploadFunction(List<XFile> images) {
     for (int i = 0; i < images.length; i++) {
@@ -385,9 +426,10 @@ class _BookPageState extends State<BookPage> {
     user.id = docUser.id;
     user.status = 'pending';
     user.acceptBy = 'none';
+
     user.useruid = currentuid.FirebaseAuth.instance.currentUser!.uid;
-    user.date = DateFormat('dd-MM-yyyy').format(getDate);
-    user.time = DateFormat('HH:mm').format(getDate);
+    user.date = DateFormat('yyyy-MM-dd').format(getDate);
+    user.time = DateFormat('hh:mm a').format(getDate);
     final json = user.toJson();
     await docUser.set(json);
   }

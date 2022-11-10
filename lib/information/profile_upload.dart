@@ -1,14 +1,13 @@
 import 'dart:io';
 
 import 'package:ekalakal/authentication/storage_services.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as basename;
 
 class ProfileUpload extends StatefulWidget {
   const ProfileUpload({super.key});
@@ -114,6 +113,13 @@ class _ProfileUploadState extends State<ProfileUpload> {
                   minimumSize: const Size(200, 50), onPrimary: Colors.white),
               onPressed: () {
                 imageSave();
+                Fluttertoast.showToast(
+                    msg: 'Image Save',
+                    backgroundColor: Colors.amberAccent,
+                    fontSize: 18,
+                    textColor: Colors.black);
+                setState(() {});
+                Navigator.pop(context);
               },
               child: const Text('Save', style: TextStyle(fontSize: 20))),
           const SizedBox(
@@ -142,7 +148,6 @@ class _ProfileUploadState extends State<ProfileUpload> {
         this.image = imageTemp;
       });
     } on PlatformException catch (e) {
-      // TODO
       print('Failed to pick an image $e');
     }
   }
@@ -155,28 +160,4 @@ class _ProfileUploadState extends State<ProfileUpload> {
           (value) => print('Done'),
         );
   }
-
-  // Future filePicker() async {
-  //   final result = await FilePicker.platform.pickFiles(
-
-  //       allowMultiple: true,
-  //       type: FileType.custom,
-  //       allowedExtensions: ['png', 'jpg', 'jpeg']);
-
-  //   if (result == null) return;
-  //   final imagesTemp = File(result.files.single.path!);
-  //   // fileName = result.files.single.name;
-  //   final fileName = result.files.single.name;
-
-  //   storage
-  //       .uploadFile(
-  //         imagesTemp.path,
-  //       )
-  //       .then(
-  //         (value) => print('Done'),
-  //       );
-  //   setState(() {
-  //     image = imagesTemp;
-  //   });
-  // }
 }

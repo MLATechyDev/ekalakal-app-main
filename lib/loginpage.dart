@@ -2,22 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ekalakal/authentication/emailverification.dart';
 import 'package:ekalakal/authentication/resetpassword.dart';
 import 'package:ekalakal/wrapper.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'registrationpage.dart';
 import 'package:ekalakal/main.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:email_validator/email_validator.dart';
-import 'residentUi/resident_main.dart';
-import 'collectorUi/collector_main.dart';
-import 'authentication/usersAuth.dart';
-import 'authentication/userPosition.dart';
-
-var _errorMsg;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -176,9 +166,15 @@ class _LoginPageUIState extends State<LoginPageUI> {
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(50))),
                             minimumSize: const Size(double.infinity, 50)),
-                        child: const Text(
+                        child: Text(
                           "Sign In",
-                          style: TextStyle(fontSize: 20, color: Colors.white),
+                          style: GoogleFonts.libreBaskerville(
+                            textStyle: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1,
+                                color: Colors.white),
+                          ),
                         ),
                       ),
                     ),
@@ -214,41 +210,6 @@ class _LoginPageUIState extends State<LoginPageUI> {
       ),
     );
   }
-
-  // Widget errorMsgBox() {
-  //   if (_errorMsg != null) {
-  //     return Container(
-  //       decoration: const BoxDecoration(
-  //           color: Colors.amberAccent,
-  //           borderRadius: BorderRadius.all(Radius.circular(30))),
-  //       width: double.infinity,
-  //       padding: const EdgeInsets.all(8.0),
-  //       height: 50,
-  //       child: SingleChildScrollView(
-  //         scrollDirection: Axis.horizontal,
-  //         child: Row(
-  //           children: [
-  //             const Icon(Icons.error_outline),
-  //             Padding(
-  //               padding: const EdgeInsets.only(left: 8.0),
-  //               child: Expanded(child: AutoSizeText(_errorMsg)),
-  //             ),
-  //             IconButton(
-  //                 onPressed: () {
-  //                   setState(() {
-  //                     _errorMsg = null;
-  //                   });
-  //                 },
-  //                 icon: const Icon(Icons.close))
-  //           ],
-  //         ),
-  //       ),
-  //     );
-  //   }
-  //   return const SizedBox(
-  //     height: 0,
-  //   );
-  // }
 
   Future signIn() async {
     final isValid = formKey.currentState!.validate();

@@ -1,157 +1,154 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ekalakal/information/edit_profile.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
-class UserProfile extends StatefulWidget {
-  const UserProfile({super.key});
+class EditAddress extends StatefulWidget {
+  const EditAddress({super.key});
 
   @override
-  State<UserProfile> createState() => _UserProfileState();
+  State<EditAddress> createState() => _EditAddressState();
 }
 
-class _UserProfileState extends State<UserProfile> {
-  final nameInfomation = FirebaseFirestore.instance
-      .collection('userpos')
-      .where('email', isEqualTo: FirebaseAuth.instance.currentUser!.email)
-      .snapshots();
-
+class _EditAddressState extends State<EditAddress> {
+  final items = [
+    'Bagong Nayon',
+    'Barangca',
+    'Calantipay',
+    'Catulinan',
+    'Concepcion',
+    'Hinukay',
+    'Makinabang',
+    'Matang Tubig',
+    'Pagala',
+    'Paitan',
+    'Piel',
+    'Pinagbarilan',
+    'Poblacion',
+    'Sabang',
+    'San Jose',
+    'San Roque',
+    'Santa Barbara',
+    'Santo Cristo',
+    'Santo Niño',
+    'Subic',
+    'Sulivan',
+    'Tangos',
+    'Tarcan',
+    'Tiaong',
+    'Tibag',
+    'Tilapayong',
+    'Virgen delos Flores'
+  ];
+  final streetNameTEC = TextEditingController();
+  final cityProvince = TextEditingController();
+  String? value;
+  late String address;
+  final formkey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+    cityProvince.text = 'Baliuag, Bulacan';
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
         centerTitle: true,
-        title: const Text('Profile Information'),
+        title: Text('Edit Address'),
       ),
-      body: StreamBuilder(
-          stream: nameInfomation,
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasError) {
-              return const Center(
-                child: Text('Something went wrong!'),
-              );
-            }
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: Text('Loading please wait!'),
-              );
-            }
-            final data = snapshot.requireData;
-
-            return ListView.builder(
-                itemCount: data.size,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          const SizedBox(
-                            height: 50,
-                          ),
-                          TextFormField(
-                            enabled: false,
-                            textAlign: TextAlign.right,
-                            initialValue: data.docs[index]['name'],
-                            decoration: const InputDecoration(
-                              prefix: Text('Name '),
-                              contentPadding: EdgeInsets.only(
-                                right: 50,
-                                left: 10,
-                              ),
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          TextFormField(
-                            enabled: false,
-                            textAlign: TextAlign.right,
-                            initialValue: data.docs[index]['address'],
-                            decoration: const InputDecoration(
-                              prefix: Text('Address '),
-                              contentPadding: EdgeInsets.only(
-                                right: 50,
-                                left: 10,
-                              ),
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          TextFormField(
-                            enabled: false,
-                            textAlign: TextAlign.right,
-                            initialValue: data.docs[index]['contact number'],
-                            decoration: const InputDecoration(
-                              prefix: Text('Contact number '),
-                              contentPadding: EdgeInsets.only(
-                                right: 50,
-                                left: 10,
-                              ),
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          TextFormField(
-                            enabled: false,
-                            textAlign: TextAlign.right,
-                            initialValue: data.docs[index]['email'],
-                            decoration: const InputDecoration(
-                              prefix: Text('Email '),
-                              contentPadding: EdgeInsets.only(
-                                right: 50,
-                                left: 10,
-                              ),
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Divider(
-                            height: 2,
-                            color: Colors.grey.shade200,
-                            thickness: 2,
-                          ),
-                          Container(
-                            padding: EdgeInsets.zero,
-                            alignment: Alignment.topLeft,
-                            child: TextButton(
-                                onPressed: () {},
-                                child: Text('Change Password')),
-                          ),
-                          Divider(
-                            height: 2,
-                            color: Colors.grey.shade300,
-                            thickness: 2,
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          OutlinedButton(
-                              onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return const EditProfile();
-                                    },
-                                  ),
-                                );
-                              },
-                              child: const Text('Edit'))
-                        ],
-                      ),
-                    ),
-                  );
-                });
-          }),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 50.0, left: 8, right: 8, bottom: 8),
+        child: Form(
+          key: formkey,
+          child: Column(
+            children: [
+              TextFormField(
+                validator: (value) {
+                  if (streetNameTEC.text.isEmpty || value == null) {
+                    return " Please fill this field!";
+                  } else {
+                    return null;
+                  }
+                },
+                controller: streetNameTEC,
+                decoration: InputDecoration(
+                  labelText: 'Street Name, Building, House No.',
+                  contentPadding: EdgeInsets.only(
+                    right: 10,
+                    left: 10,
+                  ),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                    color: Colors.white70,
+                    borderRadius: BorderRadius.circular(10)),
+                height: 40,
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                      hint: Text('Select Barangay'),
+                      value: value,
+                      menuMaxHeight: 400,
+                      onChanged: (value) {
+                        setState(() {
+                          this.value = value;
+                        });
+                      },
+                      items: items.map(buildMenuItems).toList()),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              TextFormField(
+                validator: (value) {
+                  if (cityProvince.text.isEmpty || value == null) {
+                    return " Please fill this field!";
+                  } else if (value.length < 10) {
+                    return "Please enter a valid Address";
+                  } else {
+                    return null;
+                  }
+                },
+                controller: cityProvince,
+                decoration: InputDecoration(
+                  labelText: 'City, Province',
+                  contentPadding: EdgeInsets.only(
+                    right: 10,
+                    left: 10,
+                  ),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  address =
+                      '${streetNameTEC.text} ${value.toString()} ${cityProvince.text}';
+                  final isValid = formkey.currentState!.validate();
+                  if (!isValid) return;
+                  Navigator.of(context).pop(address);
+                },
+                child: Text(
+                  'Save',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                style: ElevatedButton.styleFrom(
+                    onPrimary: Colors.white,
+                    minimumSize: Size(MediaQuery.of(context).size.width, 40)),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
+
+  DropdownMenuItem<String> buildMenuItems(String item) => DropdownMenuItem(
+      value: item,
+      child: Text(
+        item,
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ));
 }

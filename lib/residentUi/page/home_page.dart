@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,6 +17,28 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    return StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('userpos')
+            .where('email', isEqualTo: FirebaseAuth.instance.currentUser!.email)
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Text('Something went wrong'));
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          final data = snapshot.requireData;
+          return data.docs.first['adminVerify'] == 'viewed'
+              ? isVerify()
+              : onAdminVerify();
+        });
+  }
+
+  Widget isVerify() {
     return Scaffold(
       extendBody: true,
       body: SingleChildScrollView(
@@ -25,13 +49,25 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Your Appointments',
-                    style: GoogleFonts.archivoBlack(
-                      textStyle: const TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1,
+                  Center(
+                    child: SizedBox(
+                      height: 200,
+                      width: 250,
+                      child: Image.asset(
+                        'assets/kalakal-sort.png',
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      'Your Appointments',
+                      style: GoogleFonts.bebasNeue(
+                        textStyle: const TextStyle(
+                          fontSize: 35,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1,
+                        ),
                       ),
                     ),
                   ),
@@ -48,12 +84,25 @@ class _HomePageState extends State<HomePage> {
                             shape: StadiumBorder(),
                           ),
                           child: Column(
-                            children: const [
+                            children: [
                               Text(
                                 'Pending',
-                                style: TextStyle(fontSize: 15),
+                                style: GoogleFonts.bebasNeue(
+                                  textStyle: const TextStyle(
+                                    fontSize: 16,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
                               ),
-                              Text('Request', style: TextStyle(fontSize: 15)),
+                              Text(
+                                'Request',
+                                style: GoogleFonts.bebasNeue(
+                                  textStyle: const TextStyle(
+                                    fontSize: 16,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                           onPressed: () {
@@ -75,12 +124,25 @@ class _HomePageState extends State<HomePage> {
                                 const BorderSide(width: 3, color: Colors.blue),
                           ),
                           child: Column(
-                            children: const [
+                            children: [
                               Text(
                                 'On Going',
-                                style: TextStyle(fontSize: 15),
+                                style: GoogleFonts.bebasNeue(
+                                  textStyle: const TextStyle(
+                                    fontSize: 16,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
                               ),
-                              Text('Request', style: TextStyle(fontSize: 15)),
+                              Text(
+                                'Request',
+                                style: GoogleFonts.bebasNeue(
+                                  textStyle: const TextStyle(
+                                    fontSize: 16,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                           onPressed: () {
@@ -103,6 +165,17 @@ class _HomePageState extends State<HomePage> {
             ),
             _requestList ? const RequestList() : const OnGoingList(),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget onAdminVerify() {
+    return Scaffold(
+      body: Center(
+        child: Text(
+          'Your account is undergoing verification,\nplease wait until it is finished',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),
     );

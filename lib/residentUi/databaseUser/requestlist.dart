@@ -1,8 +1,8 @@
-import 'package:ekalakal/residentUi/databaseUser/users.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../databaseUser/res_app_info.dart';
+import 'package:intl/intl.dart';
 
 class RequestList extends StatefulWidget {
   const RequestList({super.key});
@@ -36,68 +36,87 @@ class _RequestListState extends State<RequestList> {
               );
             }
             final data = snapshot.requireData;
+            int _itemCount = 0;
+            for (int x = 0; x < data.size; x++) {
+              if (data.docs[x]['status'] == 'pending') {
+                _itemCount++;
+              }
+            }
 
-            return ListView.builder(
-                shrinkWrap: true,
-                itemCount: data.size,
-                itemBuilder: (context, index) {
-                  if (data.docs[index]['status'] == 'pending') {
-                    return Column(
-                      children: [
-                        Container(
-                          decoration: const BoxDecoration(
-                              color: Colors.amberAccent,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                          child: ListTile(
-                            leading: Icon(Icons.star),
-                            title: Text(
-                              'Name: ${data.docs[index]['name']}',
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
+            return _itemCount != 0
+                ? ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: data.size,
+                    itemBuilder: (context, index) {
+                      if (data.docs[index]['status'] == 'pending') {
+                        return Column(
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                  color: Colors.amberAccent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                              child: ListTile(
+                                leading: Icon(Icons.star),
+                                title: Text(
+                                  'Name: ${data.docs[index]['name']}',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                subtitle: Text(
+                                    'Address: ${data.docs[index]['address']}'),
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return ResListinfo(
+                                          status: data.docs[index]['status'],
+                                          name: data.docs[index]['name'],
+                                          address: data.docs[index]['address'],
+                                          contactnumber: data.docs[index]
+                                              ['contact number'],
+                                          description: data.docs[index]
+                                              ['description'],
+                                          id: data.docs[index]['id'],
+                                          acceptBy: data.docs[index]
+                                              ['acceptBy'],
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                                trailing: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      data.docs[index]['time'],
+                                      style: const TextStyle(
+                                          color: Colors.black54),
+                                    ),
+                                    Text(
+                                      DateFormat('MM-dd-yyyy').format(
+                                          DateTime.parse(
+                                              data.docs[index]['date'])),
+                                      style: const TextStyle(
+                                          color: Colors.black54),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                            subtitle:
-                                Text('Address: ${data.docs[index]['address']}'),
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return ResListinfo(
-                                      status: data.docs[index]['status'],
-                                      name: data.docs[index]['name'],
-                                      address: data.docs[index]['address'],
-                                      contactnumber: data.docs[index]
-                                          ['contact number'],
-                                      description: data.docs[index]
-                                          ['description'],
-                                      id: data.docs[index]['id'],
-                                      acceptBy: data.docs[index]['acceptBy'],
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                            trailing: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  data.docs[index]['time'],
-                                  style: const TextStyle(color: Colors.black54),
-                                ),
-                                Text(
-                                  data.docs[index]['date'],
-                                  style: const TextStyle(color: Colors.black54),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const Padding(padding: EdgeInsets.only(top: 8.0))
-                      ],
-                    );
-                  }
-                  return Container();
-                });
+                            const Padding(padding: EdgeInsets.only(top: 8.0))
+                          ],
+                        );
+                      }
+                      return Container();
+                    })
+                : const Center(
+                    child: Text(
+                      'You can now book an appointment.',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    ),
+                  );
           }),
     );
   }
@@ -133,56 +152,94 @@ class _OnGoingListState extends State<OnGoingList> {
                 child: Text('Loading'),
               );
             }
-            final data = snapshot.requireData;
 
-            return ListView.builder(
-                shrinkWrap: true,
-                itemCount: data.size,
-                itemBuilder: (context, index) {
-                  if (data.docs[index]['status'] == 'ongoing') {
-                    return Column(
-                      children: [
-                        Container(
-                          decoration: const BoxDecoration(
-                              color: Colors.lightBlue,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                          child: ListTile(
-                            textColor: Colors.white,
-                            leading: const Icon(Icons.star),
-                            title: Text(
-                              'Name: ${data.docs[index]['name']}',
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            subtitle:
-                                Text('Address: ${data.docs[index]['address']}'),
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return ResListinfo(
-                                        status: data.docs[index]['status'],
-                                        name: data.docs[index]['name'],
-                                        address: data.docs[index]['address'],
-                                        contactnumber: data.docs[index]
-                                            ['contact number'],
-                                        description: data.docs[index]
-                                            ['description'],
-                                        id: data.docs[index]['id'],
-                                        acceptBy: data.docs[index]['acceptBy']);
-                                  },
+            final data = snapshot.requireData;
+            int itemCount = 0;
+            for (int x = 0; x < data.size; x++) {
+              if (data.docs[x]['status'] == 'ongoing') {
+                itemCount++;
+              }
+            }
+
+            return itemCount != 0
+                ? ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: data.size,
+                    itemBuilder: (context, index) {
+                      if (data.docs[index]['status'] == 'ongoing') {
+                        return Column(
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                  color: Colors.lightBlue,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                              child: ListTile(
+                                textColor: Colors.white,
+                                leading: const Icon(Icons.star),
+                                title: Text(
+                                  'Name: ${data.docs[index]['name']}',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
                                 ),
-                              );
-                            },
-                          ),
-                        ),
-                        const Padding(padding: EdgeInsets.only(top: 8.0))
-                      ],
-                    );
-                  }
-                  return Container();
-                });
+                                subtitle: Text(
+                                    'Address: ${data.docs[index]['address']}'),
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return ResListinfo(
+                                          status: data.docs[index]['status'],
+                                          name: data.docs[index]['name'],
+                                          address: data.docs[index]['address'],
+                                          contactnumber: data.docs[index]
+                                              ['contact number'],
+                                          description: data.docs[index]
+                                              ['description'],
+                                          id: data.docs[index]['id'],
+                                          acceptBy: data.docs[index]
+                                              ['acceptBy'],
+                                          collectorsName: data.docs[index]
+                                              ['collectorsName'],
+                                          expectedTimeArrival: data.docs[index]
+                                              ['expectedTimeArrival'],
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                                trailing: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      data.docs[index]['time'],
+                                      style: const TextStyle(
+                                          color: Colors.black54),
+                                    ),
+                                    Text(
+                                      DateFormat('MM-dd-yyyy').format(
+                                          DateTime.parse(
+                                              data.docs[index]['date'])),
+                                      style: const TextStyle(
+                                          color: Colors.black54),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const Padding(padding: EdgeInsets.only(top: 8.0))
+                          ],
+                        );
+                      }
+                      return Container();
+                    })
+                : const Center(
+                    child: Text(
+                      'You do not have an on-going request,\nwait for collector to accept your request\nor book an appointment first.',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    ),
+                  );
           }),
     );
   }

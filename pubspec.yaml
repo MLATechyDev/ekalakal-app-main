@@ -66,8 +66,13 @@ dependencies:
   #DateTime Formatter
   intl: ^0.17.0
 
+  #Rating bar package
+  flutter_rating_bar: ^4.0.1
+
   #Google Map
   google_maps_flutter: ^2.2.0
+  # location: ^4.4.0
+  # permission_handler: ^10.0.0
   
   geolocator: ^8.0.1
   

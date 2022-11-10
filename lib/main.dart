@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:ekalakal/loginpage.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +22,9 @@ class EkalakalApp extends StatelessWidget {
     return MaterialApp(
         title: "E KALAKAL APP",
         navigatorKey: navigatorKey,
-        theme: ThemeData(primarySwatch: Colors.lightBlue),
+        theme: ThemeData(
+          primarySwatch: Colors.lightBlue,
+        ),
         debugShowCheckedModeBanner: false,
         home: const LoginPage());
   }

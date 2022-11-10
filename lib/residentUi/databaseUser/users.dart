@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class UserInfo {
   String id;
@@ -9,6 +7,8 @@ class UserInfo {
   String date;
   String time;
   String acceptBy;
+  final String longitude;
+  final String latitude;
   final String name;
   final String address;
   final String contactnumber;
@@ -22,6 +22,8 @@ class UserInfo {
     this.id = '',
     this.status = '',
     this.useruid = '',
+    required this.latitude,
+    required this.longitude,
     required this.name,
     required this.address,
     required this.contactnumber,
@@ -40,6 +42,9 @@ class UserInfo {
         'address': address,
         'contact number': contactnumber,
         'description': description,
+        'longitude': longitude,
+        'latitude': latitude,
+
         // 'imageURL': imageUrl,
       };
 
@@ -48,6 +53,8 @@ class UserInfo {
         address: json['address'],
         contactnumber: json['contactnumber'],
         description: json['description'],
+        longitude: json['longitude'],
+        latitude: json['latitude'],
       );
   // imageUrl: json['imageURL']);
 }

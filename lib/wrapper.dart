@@ -1,8 +1,6 @@
-import 'package:ekalakal/loginpage.dart';
 import 'package:ekalakal/registrationpage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'authentication/usersAuth.dart';
 
 class WrapperPage extends StatelessWidget {
   WrapperPage({Key? key}) : super(key: key);
