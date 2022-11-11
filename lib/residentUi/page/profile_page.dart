@@ -203,6 +203,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                     ),
+                    aboutDialog(),
                     TextButton.icon(
                       onPressed: () {
                         Fluttertoast.showToast(
@@ -228,4 +229,53 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       );
+
+  Widget aboutDialog() {
+    return TextButton.icon(
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AboutDialog(
+              applicationName: 'E KALAKAL',
+
+              applicationIcon: Image.asset('assets/ekalakal_logo.png',width: 60,height: 60,),
+              applicationLegalese: 'Legalese',
+              applicationVersion: '1.0.0',
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Developers',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+                    SizedBox(height: 8,),
+                    Text('Project Leader:',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500),),
+                     SizedBox(height: 5,),
+                    Text('MARK LORENZ ANGELES'),
+                    Text('Members:',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500),),
+                    SizedBox(height: 5,),
+                    Text('JERIMIE CLAOR'),
+                    Text('CHESTER CLEMENTE'),
+                    Text('JOHN PAOLO FRANCISCO'),
+                    Text('ABEGAIL GORING'),
+                    Text('VINCE FREDRICK PACANA'),
+                    Text('MONDE ALEXIS RIVERA'),
+
+
+                  ],
+                ),
+              ],
+            );
+          },
+        );
+      },
+      icon: const Icon(Icons.info),
+      label: const Text('About'),
+      style: TextButton.styleFrom(
+        textStyle: const TextStyle(
+          fontSize: 18,
+          //  inherit: false,
+        ),
+      ),
+    );
+  }
 }

@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ekalakal/information/user_location.dart';
 import 'package:ekalakal/information/user_profile.dart';
@@ -441,7 +440,29 @@ class _EditProfileState extends State<EditProfile> {
             alignment: Alignment.topLeft,
             child: TextButton(
                 onPressed: () {
-                  selectImage();
+                  // selectImage();
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text("Valid ID's"),
+                          content: Text(
+                              'School ID\nTIN\nUMID\nPassport\nDrivers License\nOther Government ID\n(You can also use your I AM SAFE ID for verification)'),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  selectImage();
+                                },
+                                child: Text(
+                                  'OK',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ))
+                          ],
+                        );
+                      });
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
